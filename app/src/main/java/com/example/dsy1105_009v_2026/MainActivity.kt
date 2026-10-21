@@ -12,6 +12,8 @@ import androidx.compose.runtime.setValue
 import com.example.dsy1105_009v_2026.navigation.AppNav
 import com.example.dsy1105_009v_2026.util.CameraPermissionHelper
 
+import android.os.Build
+
 class MainActivity : ComponentActivity() {
 
     //para controlar si tenemos permiso de cámara
@@ -28,10 +30,16 @@ class MainActivity : ComponentActivity() {
             Toast.makeText(this, "Se necesita permiso de cámara para escanear QR", Toast.LENGTH_LONG).show()
         }
     }
+    private val requestNotificationLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestNotificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
         // Verificar permiso inicial
         hasCameraPermission = CameraPermissionHelper.hasCameraPermission(this)
 
