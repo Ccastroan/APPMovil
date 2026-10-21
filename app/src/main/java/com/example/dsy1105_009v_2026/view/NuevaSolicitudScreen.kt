@@ -40,6 +40,9 @@ import androidx.navigation.NavController
 import com.example.dsy1105_009v_2026.model.Categoria
 import com.example.dsy1105_009v_2026.viewmodel.SolicitudViewModel
 
+import androidx.compose.ui.platform.LocalContext
+import com.example.dsy1105_009v_2026.util.Notificador
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.material3.ButtonDefaults
@@ -54,6 +57,8 @@ fun NuevaSolicitudScreen(
     viewModel: SolicitudViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
+
+    val context = LocalContext.current
 
     val formularioCompleto by remember {
         derivedStateOf {
@@ -213,6 +218,12 @@ fun NuevaSolicitudScreen(
                 onClick = {
                     if (viewModel.validarFormulario()) {
                         viewModel.guardar(username) {
+                            val codigo = viewModel.estado.value.ultimaSolicitud?.codigo ?: ""
+                            Notificador.mostrar(
+                                context,
+                                "Solicitud enviada",
+                                "Tu código de seguimiento es $codigo"
+                            )
                             navController.navigate("resumen/$username")
                         }
                     }
