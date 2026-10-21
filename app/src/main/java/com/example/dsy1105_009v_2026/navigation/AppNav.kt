@@ -1,46 +1,94 @@
 package com.example.dsy1105_009v_2026.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
-
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.dsy1105_009v_2026.ui.home.MuestraDatosScreen
 import com.example.dsy1105_009v_2026.ui.theme.HomeScreen
 import com.example.dsy1105_009v_2026.view.DrawerMenu
+import com.example.dsy1105_009v_2026.view.ListaSolicitudesScreen
+import com.example.dsy1105_009v_2026.view.NuevaSolicitudScreen
+import com.example.dsy1105_009v_2026.view.ResumenSolicitudScreen
+import com.example.dsy1105_009v_2026.viewmodel.SolicitudViewModel
 
 @Composable
-fun AppNav(){
+fun AppNav() {
     val navController = rememberNavController()
 
-    NavHost(navController=navController, startDestination="login") {
+    val solicitudViewModel: SolicitudViewModel = viewModel()
+
+    NavHost(navController = navController, startDestination = "login") {
 
         composable("login") {
             HomeScreen(navController = navController)
         } //fin composable
 
         composable(
-         //   route="muestraDatos/{username}",
-            route="DrawerMenu/{username}",
+            route = "DrawerMenu/{username}",
             arguments = listOf(
-                navArgument("username"){
-                    type= NavType.StringType
-                }//fin ListOf
+                navArgument("username") {
+                    type = NavType.StringType
+                }//fin navArgument
             )
-        )//fin composable
+        ) { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username").orEmpty()
+            DrawerMenu(username = username, navController = navController)
+        }//fin composable
 
-        { // inicio back
-            backStackEntry ->
-            val username=backStackEntry.arguments?.getString("username").orEmpty()
-           // MuestraDatosScreen(username=username,navController=navController)
-            DrawerMenu(username=username,navController=navController)
+        // Lista de solicitudes del cliente.
+        composable(
+            route = "solicitudes/{username}",
+            arguments = listOf(
+                navArgument("username") {
+                    type = NavType.StringType
+                }//fin navArgument
+            )
+        ) { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username").orEmpty()
+            ListaSolicitudesScreen(
+                username = username,
+                navController = navController,
+                viewModel = solicitudViewModel
+            )
+        }
 
-        }//fin back
+        // Formulario para crear una solicitud
+        composable(
+            route = "nueva/{username}",
+            arguments = listOf(
+                navArgument("username") {
+                    type = NavType.StringType
+                }//fin navArgument
+            )
+        ) { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username").orEmpty()
+            NuevaSolicitudScreen(
+                username = username,
+                navController = navController,
+                viewModel = solicitudViewModel
+            )
+        }//fin composable
 
+        // Resumen con el código de seguimiento
+        composable(
+            route = "resumen/{username}",
+            arguments = listOf(
+                navArgument("username") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username").orEmpty()
+            ResumenSolicitudScreen(
+                username = username,
+                navController = navController,
+                viewModel = solicitudViewModel
+            )
+        }
 
-    }//Fin NavHost
+    }
 
-}// fin AppNav
+}
