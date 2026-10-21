@@ -13,9 +13,13 @@ import com.example.dsy1105_009v_2026.view.ListaSolicitudesScreen
 import com.example.dsy1105_009v_2026.view.NuevaSolicitudScreen
 import com.example.dsy1105_009v_2026.view.ResumenSolicitudScreen
 import com.example.dsy1105_009v_2026.viewmodel.SolicitudViewModel
+import com.example.dsy1105_009v_2026.view.QrScannerScreen
+import com.example.dsy1105_009v_2026.viewmodel.QrViewModel
 
 @Composable
-fun AppNav() {
+fun AppNav(
+    hasCameraPermission: Boolean, onRequestPermission: () -> Unit
+) {
     val navController = rememberNavController()
 
     val solicitudViewModel: SolicitudViewModel = viewModel()
@@ -27,8 +31,7 @@ fun AppNav() {
         } //fin composable
 
         composable(
-            route = "DrawerMenu/{username}",
-            arguments = listOf(
+            route = "DrawerMenu/{username}", arguments = listOf(
                 navArgument("username") {
                     type = NavType.StringType
                 }//fin navArgument
@@ -40,8 +43,7 @@ fun AppNav() {
 
         // Lista de solicitudes del cliente.
         composable(
-            route = "solicitudes/{username}",
-            arguments = listOf(
+            route = "solicitudes/{username}", arguments = listOf(
                 navArgument("username") {
                     type = NavType.StringType
                 }//fin navArgument
@@ -49,16 +51,13 @@ fun AppNav() {
         ) { backStackEntry ->
             val username = backStackEntry.arguments?.getString("username").orEmpty()
             ListaSolicitudesScreen(
-                username = username,
-                navController = navController,
-                viewModel = solicitudViewModel
+                username = username, navController = navController, viewModel = solicitudViewModel
             )
         }
 
         // Formulario para crear una solicitud
         composable(
-            route = "nueva/{username}",
-            arguments = listOf(
+            route = "nueva/{username}", arguments = listOf(
                 navArgument("username") {
                     type = NavType.StringType
                 }//fin navArgument
@@ -66,26 +65,36 @@ fun AppNav() {
         ) { backStackEntry ->
             val username = backStackEntry.arguments?.getString("username").orEmpty()
             NuevaSolicitudScreen(
-                username = username,
-                navController = navController,
-                viewModel = solicitudViewModel
+                username = username, navController = navController, viewModel = solicitudViewModel
             )
         }//fin composable
 
         // Resumen con el código de seguimiento
         composable(
-            route = "resumen/{username}",
-            arguments = listOf(
-                navArgument("username") {
-                    type = NavType.StringType
-                }
-            )
-        ) { backStackEntry ->
+            route = "resumen/{username}", arguments = listOf(
+            navArgument("username") {
+                type = NavType.StringType
+            })) { backStackEntry ->
             val username = backStackEntry.arguments?.getString("username").orEmpty()
             ResumenSolicitudScreen(
+                username = username, navController = navController, viewModel = solicitudViewModel
+            )
+        }
+
+        composable(
+            route = "qr/{username}", arguments = listOf(
+            navArgument("username") {
+                type = NavType.StringType
+            })) { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username").orEmpty()
+            val qrViewModel: QrViewModel = viewModel()
+
+            QrScannerScreen(
                 username = username,
                 navController = navController,
-                viewModel = solicitudViewModel
+                viewModel = qrViewModel,
+                hasCameraPermission = hasCameraPermission,
+                onRequestPermission = onRequestPermission
             )
         }
 
