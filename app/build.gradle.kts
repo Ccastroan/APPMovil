@@ -50,6 +50,14 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    //Lector Qr
+    implementation("androidx.compose.runtime:runtime-livedata")
+    //cameraX
+    val camerax_version = "1.4.2"
+    implementation("androidx.camera:camera-core:$camerax_version")
+    implementation("androidx.camera:camera-camera2:$camerax_version")
+    implementation("androidx.camera:camera-lifecycle:$camerax_version")
+    implementation("androidx.camera:camera-view:$camerax_version")
 
     //Dependencias de navegacion JetpackCompose
     implementation("androidx.navigation:navigation-compose:2.7.7")
@@ -71,4 +79,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Ml Kit barcode Scanning
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
 }

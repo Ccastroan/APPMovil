@@ -32,6 +32,9 @@ import androidx.navigation.NavController
 import com.example.dsy1105_009v_2026.util.comoFechaHora
 import com.example.dsy1105_009v_2026.viewmodel.SolicitudViewModel
 
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material3.IconButton
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListaSolicitudesScreen(
@@ -51,6 +54,9 @@ fun ListaSolicitudesScreen(
             TopAppBar(
                 title = { Text("Mis solicitudes") },
                 actions = {
+                    IconButton(onClick = { navController.navigate("qr/$username") }) {
+                        Icon(Icons.Default.QrCodeScanner, contentDescription = "Escanear QR")
+                    }
                     TextButton(
                         onClick = {
                             navController.navigate("login") {
