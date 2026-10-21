@@ -38,6 +38,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+
 import androidx.navigation.NavController
 import com.example.dsy1105_009v_2026.util.QrScanner
 import com.example.dsy1105_009v_2026.util.comoFechaHora
@@ -56,6 +63,17 @@ fun QrScannerScreen(
     val resultado = qrResult
     val context = LocalContext.current
     var isScanning by remember { mutableStateOf(true) }
+
+    val transicion = rememberInfiniteTransition(label = "marco")
+    val alfaMarco by transicion.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(900),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "alfaMarco"
+    )
 
     Scaffold(
         topBar = {
@@ -128,8 +146,8 @@ fun QrScannerScreen(
                         color = Color.Transparent,
                         shape = MaterialTheme.shapes.medium,
                         border = BorderStroke(
-                            2.dp,
-                            MaterialTheme.colorScheme.primary
+                            3.dp,
+                            MaterialTheme.colorScheme.primary.copy(alpha = alfaMarco)
                         )
                     ) {}
                 }

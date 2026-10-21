@@ -40,6 +40,12 @@ import androidx.navigation.NavController
 import com.example.dsy1105_009v_2026.model.Categoria
 import com.example.dsy1105_009v_2026.viewmodel.SolicitudViewModel
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NuevaSolicitudScreen(
@@ -48,6 +54,23 @@ fun NuevaSolicitudScreen(
     viewModel: SolicitudViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
+
+    val formularioCompleto by remember {
+        derivedStateOf {
+            estado.titulo.isNotBlank() &&
+                    estado.descripcion.isNotBlank() &&
+                    estado.categoria != null &&
+                    estado.servicio.isNotBlank()
+        }
+    }
+
+    val colorBoton by animateColorAsState(
+        targetValue = if (formularioCompleto)
+            MaterialTheme.colorScheme.primary
+        else
+            MaterialTheme.colorScheme.outline,
+        label = "colorBoton"
+    )
 
     Scaffold(
         topBar = {
@@ -148,10 +171,9 @@ fun NuevaSolicitudScreen(
                     )
                 }
             }
-
-            estado.errores.categoria?.let {
+            AnimatedVisibility(visible = estado.errores.categoria != null) {
                 Text(
-                    text = it,
+                    text = estado.errores.categoria ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -196,6 +218,7 @@ fun NuevaSolicitudScreen(
                     }
                 },
                 enabled = !estado.guardando,
+                colors = ButtonDefaults.buttonColors(containerColor = colorBoton),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(if (estado.guardando) "Guardando..." else "Enviar solicitud")
